@@ -1,0 +1,12 @@
+opencv-python
+matplotlib
+tqdm
+imgaug
+PyYAML
+scikit-learn
+easydict
+open3d
+OpenEXR
+plyfile
+h5py
+torch-scatter -f https://pytorch-geometric.com/whl/torch-1.6.0+cu102.html

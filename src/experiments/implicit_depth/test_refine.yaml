@@ -1,0 +1,86 @@
+# general options
+trainer_name: refine
+exp_type: test
+base_log_dir: ../logs/refine
+lidf_ckpt_path: ../checkpoints/lidf_pretrained/best_network.pth
+log_name: refine_pretrained
+checkpoint_path: ../checkpoints/refine_pretrained/best_network.pth
+gpu_id: '0'
+vis_gpu: '0'
+
+
+# seg mask setting
+mask_type: all 
+
+# data setting
+dataset:
+  type: cleargrasp
+  cleargrasp_root_dir: ../datasets/cleargrasp
+  img_width: 320
+  img_height: 240
+  # ellipse dropout
+  ellipse_dropout_mean: 20
+  ellipse_gamma_shape: 10.0
+  ellipse_gamma_scale: 1.0
+
+
+# model setting
+model:
+  # rgb
+  rgb_model_type: resnet
+  rgb_embedding_type: ROIAlign
+  rgb_in: 3
+  rgb_out: 32
+  roi_inp_bbox: 8
+  roi_out_bbox: 2
+  # pnet
+  pnet_model_type: twostage
+  pnet_in: 6
+  pnet_out: 128
+  pnet_gf: 32
+  pnet_pos_type: rel
+  # pos encoding
+  pos_encode: True
+  intersect_pos_type: abs
+  multires: 8
+  multires_views: 4
+  # decoder
+  offdec_type: IEF
+  n_iter: 2
+  probdec_type: IMNET
+  imnet_gf: 64
+  scatter_type: Maxpool
+
+# refine setting
+refine:
+  forward_times: 2
+  # perturb: False
+  # pointnet
+  pnet_model_type: twostage
+  pnet_in: 6
+  pnet_out: 128
+  pnet_gf: 32
+  pnet_pos_type: rel
+  # positional encoding
+  pos_encode: True
+  intersect_pos_type: abs
+  multires: 8
+  multires_views: 4
+  # decoder
+  offdec_type: IEF
+  n_iter: 2
+  imnet_gf: 64
+  use_sigmoid: False
+  offset_range: [-0.2, 0.2]
+  use_all_pix: True
+
+# grid setting
+grid:
+  res: 8
+  valid_sample_num: 10000
+  offset_range: [0.0, 1.0]
+
+training:
+  valid_batch_size: 1
+  log_interval: 5
+  test_vis_iter: 1

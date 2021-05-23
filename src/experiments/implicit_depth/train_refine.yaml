@@ -1,0 +1,132 @@
+# general options
+trainer_name: refine
+exp_type: train
+base_log_dir: ../logs/refine
+lidf_ckpt_path: 
+log_name: 
+custom_postfix: ''
+resume: latest_network.pth
+gpu_id: 
+vis_gpu: '0,1,2,3'
+# debug: True
+
+
+# seg mask setting
+mask_type: all
+
+# data setting
+dataset:
+  type: mixed
+  cleargrasp_root_dir: ../datasets/cleargrasp
+  omniverse_root_dir: ../datasets/omniverse
+  use_data_augmentation: True
+  img_width: 320
+  img_height: 240
+  split_ratio: 0.9
+  omni_corrupt_all: True
+  corrupt_table: True
+  depth_aug: False
+  corrupt_all_pix: False
+  # ellipse dropout
+  ellipse_dropout_mean: 20
+  ellipse_gamma_shape: 10.0
+  ellipse_gamma_scale: 1.0
+
+# model setting
+model:
+  # rgb
+  rgb_model_type: resnet
+  rgb_embedding_type: ROIAlign
+  rgb_in: 3
+  rgb_out: 32
+  roi_inp_bbox: 8
+  roi_out_bbox: 2
+  # pnet
+  pnet_model_type: twostage
+  pnet_in: 6
+  pnet_out: 128
+  pnet_gf: 32
+  pnet_pos_type: rel
+  # positional encoding
+  pos_encode: True
+  intersect_pos_type: abs
+  multires: 8
+  multires_views: 4
+  # decoder
+  offdec_type: IEF
+  n_iter: 2
+  probdec_type: IMNET
+  imnet_gf: 64
+  scatter_type: Maxpool
+  maxpool_label_epo: 0
+
+# refine setting
+refine:
+  forward_times: 2
+  perturb: True
+  perturb_prob: 0.8
+  # pointnet
+  pnet_model_type: twostage
+  pnet_in: 6
+  pnet_out: 128
+  pnet_gf: 32
+  pnet_pos_type: rel
+  # positional encoding
+  pos_encode: True
+  intersect_pos_type: abs
+  multires: 8
+  multires_views: 4
+  # decoder
+  offdec_type: IEF
+  n_iter: 2
+  imnet_gf: 64
+  use_sigmoid: False
+  offset_range: [-0.2,0.2]
+  use_all_pix: True
+
+# grid setting
+grid:
+  res: 8
+  miss_sample_num: 20000
+  valid_sample_num: 10000
+  offset_range: [0.,1.]
+
+# training setting
+training:
+  batch_size: 32
+  valid_batch_size: 1
+  nepochs: 30
+  nepoch_decay: 30
+  decay_gamma: 0.1
+  nepoch_ckpt: 1
+  log_interval: 5
+  train_vis_iter: 4
+  val_vis_iter: 8
+  lr: 0.001
+  do_valid: True
+  optimizer_name: Adam
+  scheduler_name: StepLR
+
+loss:
+  pos_loss_type: single
+  pos_w: 100.0
+  prob_loss_type: ray
+  prob_w: 0
+  surf_norm_w: 10.0
+  surf_norm_epo: 0
+
+# distributed setting, only used it when multiprocessing-distributed set to True
+dist:
+  ddp: True
+  dist_url: tcp://127.0.0.1:12345
+  dist_backend: nccl
+  # nodes number
+  nodes_num: 1
+  # rank of current node
+  node_rank: 0
+  # GPUs/Process number per node
+  ngpus_per_node: 4
+  # totol GPU number. equal to nodes_num * ngpus_per_node. handled by create trainer
+  world_size: 
+  # gpu id among all nodes all processes, handled by create trainer
+  global_gpu_id:
