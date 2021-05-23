@@ -102,7 +102,6 @@ MANIFEST-*
 
 # will have compiled files and executables
 /target/
-*.png
 *.jpg
 *.mat
 *.pkl
